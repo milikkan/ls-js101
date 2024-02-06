@@ -1,12 +1,48 @@
 {
-  "welcome": "Welcome to the Calculator!",
-  "firstNumber": "What is the first number?",
-  "secondNumber": "What is the second number?",
-  "invalidNumber": "Hmmm...that doesn't look like a valid number.",
-  "chooseOperation": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
-  "invalidOperation": "Must choose 1, 2, 3, or 4.",
-  "result": "The result is",
-  "anotherCalculation": "Would you like to perform another calculation? (yes/no)",
-  "invalidAnotherCalculation": "Please enter either 'Yes' or 'No'...",
-  "goodbye": "Goodbye! Thanks for using calculator..."
+  "en": {
+    "activeLang": "Selected language: English",
+    "welcome": "Welcome to the Calculator!",
+    "firstNumber": "What is the first number?",
+    "secondNumber": "What is the second number?",
+    "invalidNumber": "Hmmm...that doesn't look like a valid number.",
+    "chooseOperation": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation": "Must choose 1, 2, 3, or 4.",
+    "result": "The result is",
+    "anotherCalculation": "Would you like to perform another calculation? (yes/no)",
+    "yesNo": "yes no",
+    "invalidAnotherCalculation": "Please enter either 'Yes' or 'No'...",
+    "notANumber": "Not a number.",
+    "goodbye": "Goodbye! Thanks for using calculator..."
+  },
+  "tr": {
+    "activeLang": "Selected language: Turkish (Secilen dil: Turkce)",
+    "welcome": "Hesap Makinesine Hosgeldin!",
+    "firstNumber": "Ilk rakami girin?",
+    "secondNumber": "Ikinci rakami girin?",
+    "invalidNumber": "Hmmm...girdiginiz gecerli bir rakam degil.",
+    "chooseOperation": "Yapmak istediginiz islem?\n1) Toplama 2) Cikarma 3) Carpma 4) Bolme",
+    "invalidOperation": "1, 2, 3 veya 4 secmelisiniz.",
+    "result": "Sonuc",
+    "anotherCalculation": "Baska bir hesaplama yapmak ister misiniz? (evet/hayir)",
+    "yesNo": "evet hayir",
+    "invalidAnotherCalculation": "Lutfen 'Evet' veya 'Hayir' girin...",
+    "notANumber": "Gecerli bir sayi degil",
+    "goodbye": "Gule gule! Hesap makinesini kullandiginiz icin tesekkurler..."
+  },
+  "de": {
+    "activeLang": "Selected language: German (Ausgewählte Sprache: Deutsch)",
+    "welcome": "Willkommen beim Rechner!",
+    "firstNumber": "Was ist die erste Zahl?",
+    "secondNumber": "Was ist die zweite Zahl?",
+    "invalidNumber": "Hmmm...das sieht nicht nach einer gültigen Zahl aus.",
+    "chooseOperation": "Welche Berechnung möchten Sie durchführen?\n1) Addieren 2) Subtraktion 3) Multiplikation 4) Aufteilung",
+    "invalidOperation": "Muss 1, 2, 3 oder 4 wählen.",
+    "result": "Das Ergebnis ist",
+    "anotherCalculation": "Möchten Sie eine weitere Berechnung durchführen?? (ja/nein)",
+    "yesNo": "ja nein",
+    "invalidAnotherCalculation": "Bitte geben Sie entweder 'Ja' oder 'Nein' ein.",
+    "notANumber": "keine Nummer",
+    "goodbye": "Auf Wiedersehen! Vielen Dank für die Nutzung..."
+  }
+  
 }

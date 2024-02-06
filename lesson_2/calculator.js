@@ -1,8 +1,14 @@
 const readline = require('readline-sync');
 const MESSAGES = require('./calculator_messages.json');
+const LANGUAGE = 'en';
 
-function prompt(msg) {
-  console.log(`=> ${msg}`);
+function messages(messageKey, lang = 'en') {
+  return MESSAGES[lang][messageKey];
+}
+
+function prompt(key) {
+  let message = messages(key, LANGUAGE);
+  console.log(`=> ${message}`);
 }
 
 function seperator() {
@@ -17,8 +23,19 @@ function invalidOperation(operation) {
   return !['1', '2', '3', '4'].includes(operation);
 }
 
+function getYesNoTranslation() {
+  return messages('yesNo', LANGUAGE).split(' ');
+}
+
 function invalidAnotherCalculation(answer) {
-  return !['yes', 'y', 'no', 'n'].includes(answer.toLocaleLowerCase());
+  let yesNo = getYesNoTranslation();
+  let choices = [yesNo[0], yesNo[0][0], yesNo[1], yesNo[1][0]];
+  return !choices.includes(answer.toLocaleLowerCase());
+}
+
+function continueCalculation(another) {
+  let yes = getYesNoTranslation()[0];
+  return another[0].toLowerCase() === yes[0];
 }
 
 function getInput(promptMsg, errorMsg, invalid) {
@@ -51,46 +68,38 @@ function calculate(number1, number2, operation) {
   return result;
 }
 
-prompt(MESSAGES['welcome']);
+function displayResult(output) {
+  if (Number.isNaN(output)) {
+    output = messages('notANumber', LANGUAGE);
+  }
+
+  console.log(`${messages('result', LANGUAGE)} ${output}.`);
+}
+
+prompt('welcome');
+prompt('activeLang');
 
 while (true) {
   seperator();
   // get first number
-  let number1 = getInput(
-    MESSAGES['firstNumber'],
-    MESSAGES['invalidNumber'],
-    invalidNumber
-  );
+  let number1 = getInput('firstNumber', 'invalidNumber', invalidNumber);
 
   // get second number
-  let number2 = getInput(
-    MESSAGES['secondNumber'],
-    MESSAGES['invalidNumber'],
-    invalidNumber
-  );
+  let number2 = getInput('secondNumber', 'invalidNumber', invalidNumber);
 
   // get the operation
-  let operation = getInput(
-    MESSAGES['chooseOperation'],
-    MESSAGES['invalidOperation'],
-    invalidOperation
-  );
+  let operation = getInput('chooseOperation', 'invalidOperation', invalidOperation);
 
   // perform the operation
   let output = calculate(number1, number2, operation);
 
-  // display the result of the operation
-  prompt(`${MESSAGES['result']} ${output}.`);
+  displayResult(output);
   seperator();
 
   // ask for another calculation
-  let another = getInput(
-    MESSAGES['anotherCalculation'],
-    MESSAGES['invalidAnotherCalculation'],
-    invalidAnotherCalculation
-  );
+  let another = getInput('anotherCalculation', 'invalidAnotherCalculation', invalidAnotherCalculation);
 
-  if (another[0].toLowerCase() !== 'y') break;
+  if (!continueCalculation(another)) break;
 }
 seperator();
-prompt(MESSAGES['goodbye']);
+prompt('goodbye');
