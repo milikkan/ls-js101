@@ -1,7 +1,9 @@
 {
   "en": {
-    "activeLang": "Selected language: English",
     "welcome": "Welcome to the Calculator!",
+    "selectLang": "Select a language please:\n1) English 2) Turkish 3) German",
+    "invalidLang": "You should choose a valid language...",
+    "activeLang": "Selected language: English",
     "firstNumber": "What is the first number?",
     "secondNumber": "What is the second number?",
     "invalidNumber": "Hmmm...that doesn't look like a valid number.",
@@ -15,8 +17,10 @@
     "goodbye": "Goodbye! Thanks for using calculator..."
   },
   "tr": {
-    "activeLang": "Selected language: Turkish (Secilen dil: Turkce)",
     "welcome": "Hesap Makinesine Hosgeldin!",
+    "selectLang": "Lutfen dil seciniz:\n1) Ingilizce 2) Turkce 3) Almanca",
+    "invalidLang": "Gecerli bir dil secmelisiniz...",
+    "activeLang": "Secilen dil: Turkce",
     "firstNumber": "Ilk rakami girin?",
     "secondNumber": "Ikinci rakami girin?",
     "invalidNumber": "Hmmm...girdiginiz gecerli bir rakam degil.",
@@ -30,8 +34,10 @@
     "goodbye": "Gule gule! Hesap makinesini kullandiginiz icin tesekkurler..."
   },
   "de": {
-    "activeLang": "Selected language: German (Ausgewählte Sprache: Deutsch)",
     "welcome": "Willkommen beim Rechner!",
+    "selectLang": "Bitte wählen Sie eine Sprache aus:\n1) Englisch 2) Türkisch 3) Deutsch",
+    "invalidLang": "Sie sollten eine gültige Sprache auswählen...",
+    "activeLang": "Ausgewählte Sprache: Deutsch",
     "firstNumber": "Was ist die erste Zahl?",
     "secondNumber": "Was ist die zweite Zahl?",
     "invalidNumber": "Hmmm...das sieht nicht nach einer gültigen Zahl aus.",

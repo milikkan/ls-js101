@@ -1,13 +1,14 @@
 const readline = require('readline-sync');
 const MESSAGES = require('./calculator_messages.json');
-const LANGUAGE = 'en';
+const LANGUAGES = ['en', 'tr', 'de'];
+let selectedLang = LANGUAGES[0];
 
 function messages(messageKey, lang = 'en') {
   return MESSAGES[lang][messageKey];
 }
 
 function prompt(key) {
-  let message = messages(key, LANGUAGE);
+  let message = messages(key, selectedLang);
   console.log(`=> ${message}`);
 }
 
@@ -23,8 +24,12 @@ function invalidOperation(operation) {
   return !['1', '2', '3', '4'].includes(operation);
 }
 
+function invalidLang(lang) {
+  return !['1', '2', '3'].includes(lang);
+}
+
 function getYesNoTranslation() {
-  return messages('yesNo', LANGUAGE).split(' ');
+  return messages('yesNo', selectedLang).split(' ');
 }
 
 function invalidAnotherCalculation(answer) {
@@ -70,16 +75,21 @@ function calculate(number1, number2, operation) {
 
 function displayResult(output) {
   if (Number.isNaN(output)) {
-    output = messages('notANumber', LANGUAGE);
+    output = messages('notANumber', selectedLang);
   }
 
-  console.log(`${messages('result', LANGUAGE)} ${output}.`);
+  console.log(`${messages('result', selectedLang)} ${output}.`);
 }
 
+console.clear();
 prompt('welcome');
-prompt('activeLang');
+seperator();
+let langChoice = getInput('selectLang', 'invalidLang', invalidLang);
+selectedLang = LANGUAGES[langChoice - 1];
 
 while (true) {
+  console.clear();
+  prompt('activeLang');
   seperator();
   // get first number
   let number1 = getInput('firstNumber', 'invalidNumber', invalidNumber);
@@ -101,5 +111,6 @@ while (true) {
 
   if (!continueCalculation(another)) break;
 }
+
 seperator();
 prompt('goodbye');
