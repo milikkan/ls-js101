@@ -1,0 +1,20 @@
+{
+  "welcome": "Welcome to the Mortgage Calculator!",
+  "loanAmount": "Enter the loan amount:",
+  "loanAmountError": "Please enter a positive number...",
+  "loanAmountInfo": "Loan amount entered as (value1)",
+  "apr": "Enter the interest rate (example: 2.5 means 2.5%):",
+  "aprError": "Please enter zero or a positive number...",
+  "aprInfo": "Interest rate (APR) entered as (value1)",
+  "loanDurationInMonths": "Enter loan duration (First, you will be prompted for years, then for months)",
+  "amountDuration": "How many (value1)?",
+  "durationError": "Please enter zero or a positive integer...",
+  "loanDurationTotalError": "Total loan duration should be at least 1 month, please try again...",
+  "loanDurationInfo": "Loan duration entered as (value1) months.",
+  "monthlyPaymentInfo": "Your monthly payment      : (value1)",
+  "totalPaymentInfo": "Total payment in (value1) months: (value2)",
+  "totalInterestInfo": "Total interest            : (value1)",
+  "anotherCalculation": "Do you want to perform another calculation? (yes/no)",
+  "anotherCalculationError": "Invalid input, please enter either yes or no...",
+  "goodbye": "Thanks for using the Mortgage Calculator, see you again!.."
+}

@@ -1,15 +1,40 @@
 const readline = require('readline-sync');
+const MESSAGES = require('./mortgage_messages.json');
+const MONTHS_IN_YEAR = 12;
 
-function prompt(message) {
-  console.log(`=> ${message}`);
+// replaces placeholders in a message with actual values
+// example:
+// message = 'test (value1) and (value2)'
+// value = 'foe bar'
+// returns 'test foo and bar'
+function processMessageVariables(message, values) {
+  if (!values) {
+    return message;
+  }
+
+  let valuesArray = values.split(' ');
+  valuesArray.forEach((value, index) => {
+    let nextValue = `(value${index + 1})`;
+    message = message.replace(nextValue, value);
+  });
+  return message;
 }
 
-function displayInfo(message) {
-  console.log(`✓ ${message}`);
+function displayMessage(key, values, cursor) {
+  let message = MESSAGES[key];
+  console.log(`${cursor} ${processMessageVariables(message, values)}`);
 }
 
-function displayError(message) {
-  console.log(`✖ ${message}`);
+function prompt(key, values) {
+  displayMessage(key, values, '=>');
+}
+
+function displayInfo(key, values) {
+  displayMessage(key, values, '✓');
+}
+
+function displayError(key, values) {
+  displayMessage(key, values, '✖');
 }
 
 function displaySeperation() {
@@ -22,8 +47,14 @@ function invalidNumber(number) {
     Number.isNaN(Number(number));
 }
 
+function invalidLoanAmount(amount) {
+  return Number(amount) === 0 ||
+    invalidNumber(amount);
+}
+
 function invalidDuration(duration) {
-  return !Number.isInteger(Number(duration)) || invalidNumber(duration);
+  return !Number.isInteger(Number(duration)) ||
+    invalidNumber(duration);
 }
 
 function formatMoney(amount, currency = '$') {
@@ -34,89 +65,142 @@ function formatPercentage(amount) {
   return `${amount}%`;
 }
 
-prompt("Welcome to the Mortgage Calculator!");
-displaySeperation();
+function getLoanAmount() {
+  prompt('loanAmount');
+  let loanAmount = readline.question();
 
-// get loan amount
-prompt("Enter the loan amount:");
-let loanAmount = readline.question();
-
-while (invalidNumber(loanAmount)) {
-  displayError("Please enter a positive number...");
-  loanAmount = readline.question();
+  while (invalidLoanAmount(loanAmount)) {
+    displayError('loanAmountError');
+    loanAmount = readline.question();
+  }
+  return Number(loanAmount);
 }
-loanAmount = Number(loanAmount);
-displayInfo(`Loan amount entered as ${formatMoney(loanAmount)}`);
-displaySeperation();
 
-// get apr
-prompt("Enter the interest rate (example: 2.5 means 2.5%):");
-let apr = readline.question();
+function getApr() {
+  prompt('apr');
+  let apr = readline.question();
 
-while (invalidNumber(apr)) {
-  displayError("Please enter a positive number...");
-  apr = readline.question();
+  while (invalidNumber(apr)) {
+    displayError('aprError');
+    apr = readline.question();
+  }
+  return apr;
 }
-displayInfo(`Interest rate (APR) entered as ${formatPercentage(apr)}`);
-displaySeperation();
 
-// get loan duration
-prompt("Enter loan duration (First, you will be prompted for years, then for months)");
-let loanDurationInMonths;
+function getDuration(monthOrYear) {
+  prompt('amountDuration', monthOrYear);
+  let duration = readline.question();
+
+  while (invalidDuration(duration)) {
+    displayError('durationError');
+    duration = readline.question();
+  }
+  return duration;
+}
+
+function getLoanDurationInMonths() {
+  prompt('loanDurationInMonths');
+  let loanDurationInMonths;
+  while (true) {
+    let years = getDuration('years');
+    let months = getDuration('months');
+
+    loanDurationInMonths = (Number(years) * MONTHS_IN_YEAR) + Number(months);
+    if (loanDurationInMonths > 0) {
+      break;
+    }
+    displayError('loanDurationTotalError');
+  }
+  return loanDurationInMonths;
+}
+
+function calculateMonthlyPayment(loanAmount, apr, loanDurationInMonths) {
+  let monthlyInterestRate = (Number(apr) / 100) / MONTHS_IN_YEAR;
+  let monthlyPayment;
+  if (monthlyInterestRate > 0) {
+    monthlyPayment = loanAmount *
+      (monthlyInterestRate /
+        (1 - Math.pow(
+          (1 + monthlyInterestRate), -loanDurationInMonths)));
+  } else {
+    monthlyPayment = loanAmount / loanDurationInMonths;
+  }
+  return monthlyPayment;
+}
+
+function displayResults(monthlyPayment, loanAmount, loanDurationInMonths) {
+  let totalPayment = monthlyPayment * loanDurationInMonths;
+  let totalInterest = totalPayment - loanAmount;
+
+  displayInfo('monthlyPaymentInfo', `${formatMoney(monthlyPayment)}`);
+  displayInfo('totalPaymentInfo', `${loanDurationInMonths} ${formatMoney(totalPayment)}`);
+  displayInfo('totalInterestInfo', `${formatMoney(totalInterest)}`);
+  displaySeperation();
+}
+
+function getAnotherCalculation() {
+  prompt('anotherCalculation');
+  let anotherCalculation = readline.question();
+  while (!['yes', 'y', 'no', 'n'].includes(anotherCalculation.toLowerCase())) {
+    displayError('anotherCalculationError');
+    anotherCalculation = readline.question();
+  }
+  return anotherCalculation;
+}
+
+function greet() {
+  console.clear();
+  prompt('welcome');
+  displaySeperation();
+}
+
+function goodbye() {
+  displaySeperation();
+  prompt('goodbye');
+}
+
+function displayLoanAmountInfo(loanAmount) {
+  displayInfo('loanAmountInfo', `${formatMoney(loanAmount)}`);
+  displaySeperation();
+}
+
+function displayAprInfo(apr) {
+  displayInfo('aprInfo', `${formatPercentage(apr)}`);
+  displaySeperation();
+}
+
+function displayLoanDurationInfo(duration) {
+  displayInfo('loanDurationInfo', `${duration}`);
+  displaySeperation();
+}
+
+function quitProgram(another) {
+  return another.charAt(0) === 'n';
+}
+
+greet();
+
 while (true) {
-  prompt("How many years?");
-  let years = readline.question();
+  let loanAmount = getLoanAmount();
+  displayLoanAmountInfo(loanAmount);
 
-  while (invalidDuration(years)) {
-    displayError("Please enter a positive integer...");
-    years = readline.question();
-  }
+  let apr = getApr();
+  displayAprInfo(apr);
 
-  prompt("How many months?");
-  let months = readline.question();
+  let loanDurationInMonths = getLoanDurationInMonths();
+  displayLoanDurationInfo(loanDurationInMonths);
 
-  while (invalidDuration(months)) {
-    displayError("Please enter a positive integer...");
-    months = readline.question();
-  }
+  let monthlyPayment = calculateMonthlyPayment(
+    loanAmount,
+    apr,
+    loanDurationInMonths
+  );
 
-  loanDurationInMonths = (Number(years) * 12) + Number(months);
-  if (loanDurationInMonths > 0) {
-    displayInfo(`Loan duration entered as ${loanDurationInMonths} months.`);
-    displaySeperation();
-    break;
-  }
-  displayError('Total loan duration should be at least 1 month, please try again...');
+  displayResults(monthlyPayment, loanAmount, loanDurationInMonths);
+
+  let another = getAnotherCalculation();
+  if (quitProgram(another)) break;
+  console.clear();
 }
 
-// calculate monthly interest rate
-let monthlyInterestRate = (Number(apr) / 100) / 12;
-
-console.log(loanAmount, typeof loanAmount);
-console.log(apr, typeof apr);
-console.log(loanDurationInMonths, typeof loanDurationInMonths);
-
-let monthlyPayment;
-if (monthlyInterestRate > 0) {
-  monthlyPayment = loanAmount *
-  (monthlyInterestRate /
-  (1 - Math.pow((1 + monthlyInterestRate), -loanDurationInMonths)));
-} else {
-  monthlyPayment = loanAmount / loanDurationInMonths;
-}
-
-let totalPayment = monthlyPayment * loanDurationInMonths;
-let totalInterest = totalPayment - loanAmount;
-
-// display result:
-displaySeperation();
-displayInfo(`${'Your monthly payment:'.padEnd(30)} ${formatMoney(monthlyPayment)}`);
-displayInfo(`${`Total payment in ${loanDurationInMonths} months:`.padEnd(30)} ${formatMoney(totalPayment)}`);
-displayInfo(`${'Total interest:'.padEnd(30)} ${formatMoney(totalInterest)}`);
-
-// TODO:
-// ask for another calculation
-// clear screen before each calculation
-// externalize messages
-// extract inputs from user to functions
-// extract calculations to functions
+goodbye();
