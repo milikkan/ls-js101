@@ -14,8 +14,35 @@ const WINNING_SCORE = 3;
 
 let scores = {player: 0, computer: 0};
 
-function prompt(msg) {
-  console.log(`=> ${msg}`);
+// replaces placeholders in a message with actual values
+// example:
+// message = 'test (value1) and (value2)'
+// value = 'foe-bar'
+// returns 'test foo and bar'
+function processMessageVariables(message, values) {
+  if (!values) {
+    return message;
+  }
+
+  let valuesArray = values.split('-');
+  valuesArray.forEach((value, index) => {
+    let nextValue = `(value${index + 1})`;
+    message = message.replace(nextValue, value);
+  });
+  return message;
+}
+
+function prompt(key, values, showCursor = true) {
+  let message = MESSAGES[key];
+  console.log(`${showCursor ? '=> ' : ''}${processMessageVariables(message, values)}`);
+}
+
+function drawLine(pattern = '-', len = 25) {
+  console.log(pattern.repeat(len));
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase().concat(str.slice(1));
 }
 
 function validAbbreviations(choices) {
@@ -28,14 +55,14 @@ function playerWins(playerChoice, computerChoice) {
 
 function displayChoicePrompt() {
   let choicePrompt = VALID_CHOICES.map((choice, index) => {
-    return `${choice}(${CHOICE_ABBRS[index]})`;
+    return `${capitalize(choice)} (${CHOICE_ABBRS[index]})`;
   }).join(', ');
 
-  prompt(`Choose one: ${choicePrompt}`);
+  prompt('choicePrompt', `${choicePrompt}`);
 }
 
 function displayChoices(player, computer) {
-  prompt(`You chose ${player.toUpperCase()}. Computer chose ${computer.toUpperCase()}.`);
+  prompt('choices', `${player.toUpperCase()}-${computer.toUpperCase()}`);
 }
 
 function abbreviatedChoice(choice) {
@@ -48,10 +75,11 @@ function invalidChoice(choice) {
 }
 
 function getPlayerChoice() {
+  displayChoicePrompt();
   let playerChoice = readline.question().toLowerCase();
 
   while (invalidChoice(playerChoice)) {
-    prompt("That's not a valid choice.");
+    prompt('invalidChoice');
     playerChoice = readline.question();
   }
 
@@ -66,7 +94,7 @@ function getComputerChoice() {
   return VALID_CHOICES[randomIndex];
 }
 
-function determineWinner(playerChoice, computerChoice) {
+function determineRoundWinner(playerChoice, computerChoice) {
   if (playerWins(playerChoice, computerChoice)) {
     return 'player';
   } else if (playerWins(computerChoice, playerChoice)) {
@@ -76,16 +104,16 @@ function determineWinner(playerChoice, computerChoice) {
   }
 }
 
-function nobodyWins() {
+function gameNotWon() {
   return scores.player < WINNING_SCORE &&
     scores.computer < WINNING_SCORE;
 }
 
-function displayResult(winner, playerChoice, computerChoice) {
+function displayRoundResult(winner, playerChoice, computerChoice) {
 
   function displayMessage(winner, winnerChoice, loserChoice) {
-    prompt(`${winner} wins!`);
-    prompt(`${winnerChoice.toUpperCase()} ${MESSAGES[winnerChoice][loserChoice]} ${loserChoice.toUpperCase()}`);
+    console.log(`${winnerChoice.toUpperCase()} ${MESSAGES[winnerChoice][loserChoice]} ${loserChoice.toUpperCase()}`);
+    prompt('roundWinner', `${winner}`);
   }
 
   switch (winner) {
@@ -96,7 +124,7 @@ function displayResult(winner, playerChoice, computerChoice) {
       displayMessage('Computer', computerChoice, playerChoice);
       break;
     default:
-      prompt('It is a tie!');
+      prompt('tieResult');
   }
 }
 
@@ -106,7 +134,7 @@ function updateScores(winner) {
 }
 
 function displayScores() {
-  prompt(`Player: ${scores.player} - Computer: ${scores.computer}`);
+  prompt('scores', `${scores.player}-${scores.computer}`);
 }
 
 function resetScores() {
@@ -114,20 +142,20 @@ function resetScores() {
   scores.player = 0;
 }
 
-function displayGrandWinner() {
-  if (scores.computer === 3) {
-    prompt('Computer is GRAND WINNER!');
-  } else {
-    prompt('Player is GRAND WINNER!');
-  }
+function displayGameWinner() {
+  let gameWinner = (scores.computer === 3) ? 'Computer' : 'Player';
+  drawLine();
+  displayScores();
+  prompt('gameWinner', `${gameWinner}`);
 }
 
 function getPlayAgain() {
-  prompt('Would you like to play again? (y/n)');
+  drawLine();
+  prompt('playAgain');
   let answer = readline.question().toLowerCase();
 
   while (answer[0] !== 'n' && answer[0] !== 'y') {
-    prompt("Please enter 'y' or 'n'");
+    prompt('playAgainError');
     answer = readline.question().toLowerCase();
   }
   return answer;
@@ -137,34 +165,66 @@ function quitGame(playAgain) {
   return playAgain[0] === 'n';
 }
 
-while (true) {
-  console.clear();
-
-  while (nobodyWins()) {
-    prompt('Welcome to the Rock-Papers-Scissors-Lizard-Spock Game');
-    prompt(`When either player or computer reaches ${WINNING_SCORE} wins, game is over.`);
-    displayScores();
-    displayChoicePrompt();
-    let playerChoice = getPlayerChoice();
-    let computerChoice = getComputerChoice();
-    displayChoices(playerChoice, computerChoice);
-
-    let winner = determineWinner(playerChoice, computerChoice);
-    displayResult(winner, playerChoice, computerChoice);
-
-    updateScores(winner);
-  }
-
-  displayGrandWinner();
-
-  let playAgain = getPlayAgain();
-  if (quitGame(playAgain)) break;
-
-  resetScores();
+function waitForUser() {
+  prompt('continue', '', false);
+  readline.question();
 }
 
-prompt('Thanks for playing the game! See you again...');
+function generateRules() {
+  Object.keys(WINNING_MOVES).forEach(move => {
+    let beats = WINNING_MOVES[move]['beats'];
+    console.log(`* ${move.toUpperCase()}:`);
+    console.log(`  ${MESSAGES[move][beats[0]]} ${capitalize(beats[0])}, ${MESSAGES[move][beats[1]]} ${capitalize(beats[1])}`);
+  });
+}
 
-// TODOs;
-// 1. externalize messages
-// 2. abstract away to functions and check abstraction level
+function displayWelcomeScreen() {
+  console.clear();
+  prompt('welcome', '', false);
+  drawLine('=', MESSAGES['welcome'].length);
+  prompt('winningScore', `${WINNING_SCORE}`);
+  drawLine();
+  prompt('gameRulesHeader');
+  generateRules();
+  waitForUser();
+}
+
+function playRound() {
+  console.clear();
+  displayScores();
+
+  let playerChoice = getPlayerChoice();
+  let computerChoice = getComputerChoice();
+  displayChoices(playerChoice, computerChoice);
+
+  let winner = determineRoundWinner(playerChoice, computerChoice);
+  displayRoundResult(winner, playerChoice, computerChoice);
+
+  updateScores(winner);
+  if (gameNotWon()) waitForUser();
+}
+
+function displayGoodbye() {
+  drawLine();
+  prompt('goodbye');
+}
+
+function playRpsGame() {
+  displayWelcomeScreen();
+  while (true) {
+    console.clear();
+
+    while (gameNotWon()) {
+      playRound();
+    }
+
+    displayGameWinner();
+    let playAgain = getPlayAgain();
+    if (quitGame(playAgain)) break;
+
+    resetScores();
+  }
+  displayGoodbye();
+}
+
+playRpsGame();
