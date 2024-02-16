@@ -1,0 +1,22 @@
+{
+  "rock": {
+    "scissors": "crushes",
+    "lizard": "crushes"
+  },
+  "paper": {
+    "rock": "covers",
+    "spock": "disproves"
+  },
+  "scissors": {
+    "paper": "cuts",
+    "lizard": "decapitates"
+  },
+  "lizard": {
+    "paper": "eats",
+    "spock": "poisons"
+  },
+  "spock": {
+    "scissors": "smashes",
+    "rock": "vaporizes"
+  }
+}
