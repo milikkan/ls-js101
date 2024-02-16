@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome to the Mortgage Calculator!",
   "loanAmount": "Enter the loan amount:",
-  "loanAmountError": "Please enter a positive number...",
+  "loanAmountError": "Please enter a positive number (Min loan amount can be $0.01)",
   "loanAmountInfo": "Loan amount entered as (value1)",
   "apr": "Enter the interest rate (example: 2.5 means 2.5%):",
   "aprError": "Please enter zero or a positive number...",

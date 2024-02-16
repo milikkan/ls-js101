@@ -49,6 +49,7 @@ function invalidNumber(number) {
 
 function invalidLoanAmount(amount) {
   return Number(amount) === 0 ||
+    Number(amount).toFixed(2) === '0.00' ||
     invalidNumber(amount);
 }
 
@@ -178,29 +179,30 @@ function quitProgram(another) {
   return another.charAt(0) === 'n';
 }
 
-greet();
+function calculateMortgage() {
+  greet();
 
-while (true) {
-  let loanAmount = getLoanAmount();
-  displayLoanAmountInfo(loanAmount);
+  while (true) {
+    let loanAmount = getLoanAmount();
+    displayLoanAmountInfo(loanAmount);
 
-  let apr = getApr();
-  displayAprInfo(apr);
+    let apr = getApr();
+    displayAprInfo(apr);
 
-  let loanDurationInMonths = getLoanDurationInMonths();
-  displayLoanDurationInfo(loanDurationInMonths);
+    let loanDurationInMonths = getLoanDurationInMonths();
+    displayLoanDurationInfo(loanDurationInMonths);
 
-  let monthlyPayment = calculateMonthlyPayment(
-    loanAmount,
-    apr,
-    loanDurationInMonths
-  );
+    let monthlyPayment = calculateMonthlyPayment(loanAmount, apr,
+      loanDurationInMonths);
 
-  displayResults(monthlyPayment, loanAmount, loanDurationInMonths);
+    displayResults(monthlyPayment, loanAmount, loanDurationInMonths);
 
-  let another = getAnotherCalculation();
-  if (quitProgram(another)) break;
-  console.clear();
+    let another = getAnotherCalculation();
+    if (quitProgram(another)) break;
+    console.clear();
+  }
+
+  goodbye();
 }
 
-goodbye();
+calculateMortgage();
