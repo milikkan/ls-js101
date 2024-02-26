@@ -53,6 +53,10 @@ function playerWins(playerChoice, computerChoice) {
   return WINNING_MOVES[playerChoice]['beats'].includes(computerChoice);
 }
 
+function computerWins(computerChoice, playerChoice) {
+  return WINNING_MOVES[computerChoice]['beats'].includes(playerChoice);
+}
+
 function displayChoicePrompt() {
   let choicePrompt = VALID_CHOICES.map((choice, index) => {
     return `${capitalize(choice)} (${CHOICE_ABBRS[index]})`;
@@ -75,11 +79,20 @@ function invalidChoice(choice) {
 }
 
 function getPlayerChoice() {
-  displayChoicePrompt();
+
+  function displayScoreAndChoicePrompt() {
+    console.clear();
+    displayScores();
+    displayChoicePrompt();
+  }
+
+  displayScoreAndChoicePrompt();
   let playerChoice = readline.question().toLowerCase();
 
   while (invalidChoice(playerChoice)) {
     prompt('invalidChoice');
+    waitForUser();
+    displayScoreAndChoicePrompt();
     playerChoice = readline.question();
   }
 
@@ -97,7 +110,7 @@ function getComputerChoice() {
 function determineRoundWinner(playerChoice, computerChoice) {
   if (playerWins(playerChoice, computerChoice)) {
     return 'player';
-  } else if (playerWins(computerChoice, playerChoice)) {
+  } else if (computerWins(computerChoice, playerChoice)) {
     return 'computer';
   } else {
     return 'tie';
@@ -143,26 +156,27 @@ function resetScores() {
 }
 
 function displayGameWinner() {
-  let gameWinner = (scores.computer === 3) ? 'Computer' : 'Player';
+  let gameWinner = (scores.computer === WINNING_SCORE) ? 'Computer' : 'Player';
   drawLine();
   displayScores();
   prompt('gameWinner', `${gameWinner}`);
 }
 
-function getPlayAgain() {
+function invalidPlayAgain(answer) {
+  return !['yes', 'y', 'no', 'n'].includes(answer);
+}
+
+function quitGame() {
   drawLine();
   prompt('playAgain');
   let answer = readline.question().toLowerCase();
 
-  while (answer[0] !== 'n' && answer[0] !== 'y') {
+  while (invalidPlayAgain(answer)) {
     prompt('playAgainError');
     answer = readline.question().toLowerCase();
   }
-  return answer;
-}
 
-function quitGame(playAgain) {
-  return playAgain[0] === 'n';
+  return answer[0] === 'n';
 }
 
 function waitForUser() {
@@ -190,9 +204,6 @@ function displayWelcomeScreen() {
 }
 
 function playRound() {
-  console.clear();
-  displayScores();
-
   let playerChoice = getPlayerChoice();
   let computerChoice = getComputerChoice();
   displayChoices(playerChoice, computerChoice);
@@ -219,8 +230,7 @@ function playRpsGame() {
     }
 
     displayGameWinner();
-    let playAgain = getPlayAgain();
-    if (quitGame(playAgain)) break;
+    if (quitGame()) break;
 
     resetScores();
   }

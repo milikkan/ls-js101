@@ -22,7 +22,7 @@
   "welcome": "Welcome to the Rock-Papers-Scissors-Lizard-Spock Game",
   "winningScore": "The side who reaches the score (value1) first, wins the game.",
   "gameRulesHeader": "RULES: This is a variation of classic Rock-Paper-Scissors game.",
-  "continue": "\nPress any key to continue...",
+  "continue": "\nPress Enter to continue...",
   "scores": "Player: (value1) - Computer: (value2)",
   "choicePrompt": "Choose one: (value1)",
   "invalidChoice": "That's not a valid choice.",
@@ -31,6 +31,6 @@
   "tieResult": "It is a tie!",
   "gameWinner": "(value1) is the GRAND WINNER!",
   "playAgain": "Would you like to play again? (y/n)",
-  "playAgainError": "Please enter 'y' or 'n'",
+  "playAgainError": "Please enter 'Yes (y)' or 'No (n)'",
   "goodbye": "Thanks for playing the game! See you again..."
 }
